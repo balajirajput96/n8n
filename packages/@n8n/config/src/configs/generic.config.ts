@@ -17,4 +17,8 @@ export class GenericConfig {
 	/** Grace period (in seconds) to wait for components to shut down before process exit. */
 	@Env('N8N_GRACEFUL_SHUTDOWN_TIMEOUT')
 	gracefulShutdownTimeout: number = 30;
+
+	/** Enable offline mode for air-gapped environments. Disables external connections and features requiring internet. */
+	@Env('N8N_OFFLINE_MODE')
+	offlineMode: boolean = false;
 }

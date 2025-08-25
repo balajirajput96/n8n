@@ -127,6 +127,13 @@ export abstract class AbstractServer {
 			res.send({ status: 'ok' });
 		});
 
+		// offline status endpoint
+		this.app.get('/api/offline-status', async (_req, res) => {
+			const { OfflineService } = await import('./services/offline.service');
+			const offlineService = Container.get(OfflineService);
+			res.send(offlineService.getOfflineStatus());
+		});
+
 		const { connectionState } = this.dbConnection;
 
 		this.app.get('/healthz/readiness', (_req, res) => {

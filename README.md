@@ -61,6 +61,10 @@ Additional information about the license model can be found in the [docs](https:
 
 Found a bug 🐛 or have a feature idea ✨? Check our [Contributing Guide](https://github.com/n8n-io/n8n/blob/master/CONTRIBUTING.md) to get started.
 
+## Offline Deployment
+
+For air-gapped environments or systems without internet connectivity, n8n supports offline mode. See our [Offline Deployment Guide](docs/OFFLINE_DEPLOYMENT.md) for complete instructions on running n8n without internet access.
+
 ## Join the Team
 
 Want to shape the future of automation? Check out our [job posts](https://n8n.io/careers) and join our team!
