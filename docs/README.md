@@ -12,7 +12,8 @@ If you're looking to connect your email account with AI functionality in n8n, th
 
 1. **[Integration Guide](./email-ai-integration-guide.md)** - Complete setup instructions
 2. **[Example Workflow](./email-ai-workflow-example.json)** - Ready-to-import workflow
-3. **Security Best Practices** - How to safely configure credentials
+3. **[Test Scripts](./test-perplexity-connection.js)** - Credential validation tools
+4. **Security Best Practices** - How to safely configure credentials
 
 ## 📋 Prerequisites
 
@@ -48,6 +49,20 @@ If you're looking to connect your email account with AI functionality in n8n, th
 2. **Configure in n8n**:
    - Create new "Perplexity API" credential
    - Enter your API key
+
+### 🧪 Test Your Credentials
+
+Before setting up in n8n, you can test your credentials using the provided scripts:
+
+```bash
+# Test Perplexity API connection
+node test-perplexity-connection.js your-api-key-here
+
+# Test email SMTP connection
+node test-email-connection.js your.email@gmail.com your-app-password smtp.gmail.com 587
+```
+
+**Note**: These scripts require Node.js and the `nodemailer` package for email testing.
 
 ## 📤 Import Example Workflow
 
