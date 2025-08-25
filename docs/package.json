@@ -1,0 +1,23 @@
+{
+  "name": "n8n-email-ai-integration-tools",
+  "version": "1.0.0",
+  "description": "Testing and setup tools for n8n email and AI integration",
+  "scripts": {
+    "test:perplexity": "node test-perplexity-connection.js",
+    "test:email": "node test-email-connection.js",
+    "install-deps": "npm install nodemailer"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.0"
+  },
+  "keywords": [
+    "n8n",
+    "email",
+    "ai",
+    "perplexity",
+    "integration",
+    "testing"
+  ],
+  "author": "n8n community",
+  "license": "SEE LICENSE IN ../LICENSE.md"
+}
