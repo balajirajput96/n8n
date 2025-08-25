@@ -266,6 +266,21 @@ However, I did not like how long the name was and I could not imagine writing so
 
 If you need more help with n8n, you can ask for support in the [n8n community forum](https://community.n8n.io). This is the best source of answers, as both the n8n support team and community members can help.
 
+## Offline Deployment
+
+For air-gapped or offline environments, n8n supports offline mode. Set the `N8N_OFFLINE_MODE=true` environment variable:
+
+```bash
+docker run -it --rm \
+  --name n8n \
+  -p 5678:5678 \
+  -e N8N_OFFLINE_MODE=true \
+  -v n8n_data:/home/node/.n8n \
+  docker.n8n.io/n8nio/n8n
+```
+
+For detailed offline deployment instructions, see the [Offline Deployment Guide](https://github.com/n8n-io/n8n/blob/master/docs/OFFLINE_DEPLOYMENT.md).
+
 ## Jobs
 
 If you are interested in working for n8n and so shape the future of the project check out our [job posts](https://jobs.ashbyhq.com/n8n).
