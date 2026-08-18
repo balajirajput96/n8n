@@ -1,5 +1,7 @@
 from pathlib import Path
 import sys
+from pathlib import Path
+
 try:
     import yaml
 except Exception as exc:
