@@ -6,6 +6,7 @@ on:
       - master
     paths-ignore:
       - packages/@n8n/task-runner-python/**
+  workflow_dispatch:
 
 jobs:
   build-github:
