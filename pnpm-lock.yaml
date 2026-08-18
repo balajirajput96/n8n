@@ -1654,6 +1654,9 @@ importers:
       '@types/convict':
         specifier: ^6.1.1
         version: 6.1.1
+      '@types/fs-extra':
+        specifier: ^9.0.13
+        version: 9.0.13
       '@types/k6':
         specifier: ^0.52.0
         version: 0.52.0

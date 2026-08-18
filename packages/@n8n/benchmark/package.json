@@ -44,6 +44,7 @@
   "devDependencies": {
     "@n8n/typescript-config": "workspace:*",
     "@types/convict": "^6.1.1",
+    "@types/fs-extra": "^9.0.13",
     "@types/k6": "^0.52.0",
     "typescript": "catalog:typescript"
   },
