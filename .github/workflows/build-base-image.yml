@@ -21,7 +21,28 @@ on:
         type: boolean
 
 jobs:
+  credentials:
+    name: Check registry credentials
+    runs-on: ubuntu-latest
+    outputs:
+      can_build: ${{ steps.check.outputs.can_build }}
+    steps:
+      - id: check
+        shell: bash
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          if [[ -z "$DOCKER_USERNAME" || -z "$DOCKER_PASSWORD" ]]; then
+            echo "can_build=false" >> "$GITHUB_OUTPUT"
+            echo "Required Docker registry credentials are unavailable; build will be skipped safely."
+          else
+            echo "can_build=true" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
+    needs: credentials
+    if: needs.credentials.outputs.can_build == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
