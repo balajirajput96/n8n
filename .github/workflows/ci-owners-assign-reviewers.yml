@@ -23,24 +23,35 @@ on:
     branches:
       - master
 
-env:
-  N8N_ASSISTANT_APP_ID: ${{ secrets.N8N_ASSISTANT_APP_ID }}
-  N8N_ASSISTANT_PRIVATE_KEY: ${{ secrets.N8N_ASSISTANT_PRIVATE_KEY }}
-
 jobs:
+  preflight:
+    name: Verify reviewer automation credentials
+    runs-on: ubuntu-latest
+    outputs:
+      credentials_available: ${{ steps.verify.outputs.credentials_available }}
+    env:
+      N8N_ASSISTANT_APP_ID: ${{ secrets.N8N_ASSISTANT_APP_ID }}
+      N8N_ASSISTANT_PRIVATE_KEY: ${{ secrets.N8N_ASSISTANT_PRIVATE_KEY }}
+    steps:
+      - id: verify
+        shell: bash
+        run: |
+          if [ -n "$N8N_ASSISTANT_APP_ID" ] && [ -n "$N8N_ASSISTANT_PRIVATE_KEY" ]; then
+            echo 'credentials_available=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'credentials_available=false' >> "$GITHUB_OUTPUT"
+            echo 'Reviewer assignment skipped because the GitHub App credentials are unavailable.'
+          fi
+
   assign-reviewers:
     name: Assign reviewers
-    # Skipped for:
-    #  - PRs from forks (no token to assign with)
-    #  - Bot-authored PRs (Dependabot, etc.), except cat-bot which
-    #    opts in explicitly so a human-applied label can route its PRs to the
-    #    owning team
+    # Skipped for PRs from forks, bot-authored PRs other than cat-bot, and missing GitHub App credentials.
+    needs: preflight
     if: |
+      needs.preflight.outputs.credentials_available == 'true' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       (github.event.pull_request.user.type != 'Bot' ||
-       github.event.pull_request.user.login == 'n8n-cat-bot[bot]') &&
-      env.N8N_ASSISTANT_APP_ID != '' &&
-      env.N8N_ASSISTANT_PRIVATE_KEY != ''
+       github.event.pull_request.user.login == 'n8n-cat-bot[bot]')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
