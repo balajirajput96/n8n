@@ -14,7 +14,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    name: Verify benchmark Azure prerequisites
+    runs-on: ubuntu-latest
+    outputs:
+      benchmark_ready: ${{ steps.verify.outputs.benchmark_ready }}
+    env:
+      BENCHMARK_ARM_CLIENT_ID: ${{ secrets.BENCHMARK_ARM_CLIENT_ID }}
+      BENCHMARK_ARM_TENANT_ID: ${{ secrets.BENCHMARK_ARM_TENANT_ID }}
+      BENCHMARK_ARM_SUBSCRIPTION_ID: ${{ secrets.BENCHMARK_ARM_SUBSCRIPTION_ID }}
+    steps:
+      - id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(BENCHMARK_ARM_CLIENT_ID BENCHMARK_ARM_TENANT_ID BENCHMARK_ARM_SUBSCRIPTION_ID)
+          missing=()
+          for name in "${required[@]}"; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+          if [ "${#missing[@]}" -eq 0 ]; then
+            echo 'benchmark_ready=true' >> "$GITHUB_OUTPUT"
+            echo 'Benchmark destroy prerequisites are available.'
+          else
+            echo 'benchmark_ready=false' >> "$GITHUB_OUTPUT"
+            echo "Benchmark destroy skipped because required Azure settings are unavailable: ${missing[*]}"
+          fi
+
   build:
+    needs: preflight
+    if: ${{ needs.preflight.outputs.benchmark_ready == 'true' }}
     runs-on: ubuntu-latest
     environment: benchmarking
 
