@@ -15,6 +15,10 @@ on:
     branches:
       - master
 
+env:
+  N8N_ASSISTANT_APP_ID: ${{ secrets.N8N_ASSISTANT_APP_ID }}
+  N8N_ASSISTANT_PRIVATE_KEY: ${{ secrets.N8N_ASSISTANT_PRIVATE_KEY }}
+
 jobs:
   recommend-reviewers:
     name: Recommend reviewers
@@ -23,7 +27,9 @@ jobs:
     #  - Bot-authored PRs (Dependabot, etc. — noise, not useful)
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
-      github.event.pull_request.user.type != 'Bot'
+      github.event.pull_request.user.type != 'Bot' &&
+      env.N8N_ASSISTANT_APP_ID != '' &&
+      env.N8N_ASSISTANT_PRIVATE_KEY != ''
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
