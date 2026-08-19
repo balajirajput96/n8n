@@ -1,6 +1,7 @@
 name: 'CI: Detect New Packages on Master'
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - closed
@@ -11,7 +12,7 @@ jobs:
   detect-new-packages:
     name: Check for new unpublished packages
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -29,7 +30,7 @@ jobs:
         run: node .github/scripts/detect-new-packages.mjs
 
       - name: Notify Slack about new packages
-        if: steps.detect.outcome == 'failure' && steps.detect.outputs.packages != ''
+        if: github.event_name != 'workflow_dispatch' && steps.detect.outcome == 'failure' && steps.detect.outputs.packages != ''
         env:
           SLACK_TOKEN: ${{ secrets.RELEASE_HELPER_SLACK_TOKEN }}
           MESSAGE: |-
