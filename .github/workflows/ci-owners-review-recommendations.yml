@@ -7,6 +7,7 @@ name: 'CI: Owners Review Recommendations'
 # Advisory only — does not gate merging.
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - opened
