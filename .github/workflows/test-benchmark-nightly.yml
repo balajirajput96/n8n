@@ -36,7 +36,39 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    name: Verify benchmark prerequisites
+    runs-on: ubuntu-latest
+    outputs:
+      benchmark_ready: ${{ steps.verify.outputs.benchmark_ready }}
+    env:
+      ARM_CLIENT_ID: ${{ secrets.BENCHMARK_ARM_CLIENT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.BENCHMARK_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.BENCHMARK_ARM_TENANT_ID }}
+      N8N_LICENSE_CERT: ${{ secrets.N8N_BENCHMARK_LICENSE_CERT }}
+    steps:
+      - id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(ARM_CLIENT_ID ARM_SUBSCRIPTION_ID ARM_TENANT_ID N8N_LICENSE_CERT)
+          missing=()
+          for name in "${required[@]}"; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+          if [ "${#missing[@]}" -eq 0 ]; then
+            echo 'benchmark_ready=true' >> "$GITHUB_OUTPUT"
+            echo 'Benchmark prerequisites are available.'
+          else
+            echo 'benchmark_ready=false' >> "$GITHUB_OUTPUT"
+            echo "Benchmark skipped because required settings are unavailable: ${missing[*]}"
+          fi
+
   build:
+    needs: preflight
+    if: ${{ needs.preflight.outputs.benchmark_ready == 'true' }}
     runs-on: ubuntu-latest
     environment: benchmarking
 
