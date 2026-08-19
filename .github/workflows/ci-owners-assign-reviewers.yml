@@ -23,6 +23,10 @@ on:
     branches:
       - master
 
+env:
+  N8N_ASSISTANT_APP_ID: ${{ secrets.N8N_ASSISTANT_APP_ID }}
+  N8N_ASSISTANT_PRIVATE_KEY: ${{ secrets.N8N_ASSISTANT_PRIVATE_KEY }}
+
 jobs:
   assign-reviewers:
     name: Assign reviewers
@@ -34,7 +38,9 @@ jobs:
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
       (github.event.pull_request.user.type != 'Bot' ||
-       github.event.pull_request.user.login == 'n8n-cat-bot[bot]')
+       github.event.pull_request.user.login == 'n8n-cat-bot[bot]') &&
+      env.N8N_ASSISTANT_APP_ID != '' &&
+      env.N8N_ASSISTANT_PRIVATE_KEY != ''
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
