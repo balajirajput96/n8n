@@ -123,19 +123,11 @@ jobs:
             echo "content=No changelog generated. Likely points to fixes in our CI." >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Push the release branch, and Create the PR
-        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
+      - name: Skip Pull Request creation in fork
         id: create-pr
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          base: 'release/${{ env.NEXT_RELEASE }}'
-          branch: 'release-pr/${{ env.NEXT_RELEASE }}'
-          commit-message: ':rocket: Release ${{ env.NEXT_RELEASE }}'
-          delete-branch: true
-          labels: release,release:${{ inputs.release-type }},automation:release
-          title: ':rocket: Release ${{ env.NEXT_RELEASE }}'
-          body: ${{ steps.generate-body.outputs.content }}
-
+        run: |
+          echo "pull-request-number=" >> "$GITHUB_OUTPUT"
+          echo "Automatic pull request creation is disabled in this fork."
   approve-and-automerge:
     needs: [create-release-pr]
     if: |
