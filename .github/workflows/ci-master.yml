@@ -61,7 +61,8 @@ jobs:
       contents: read
     with:
       scope: changed
-      base-ref: ${{ github.event.before }}
+      # workflow_dispatch has no event.before; compare to the default branch in that case.
+      base-ref: ${{ github.event.before || github.event.repository.default_branch }}
 
   notify-on-failure:
     name: Notify Slack on failure
