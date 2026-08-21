@@ -119,7 +119,7 @@
     "sha.js": "^2.4.12",
     "tarn": "3.0.2",
     "tslib": "^2.5.0",
-    "uuid": "^9.0.0"
+    "uuid": "^14.0.0"
   },
   "scripts": {
     "test": "tsc && mocha --file ./build/compiled/test/utils/test-setup.js --recursive --timeout 90000 ./build/compiled/test",
