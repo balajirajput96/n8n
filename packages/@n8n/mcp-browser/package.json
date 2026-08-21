@@ -34,7 +34,7 @@
     "playwright-core": "catalog:",
     "selenium-webdriver": "4.39.0",
     "turndown": "catalog:",
-    "ws": "8.20.1",
+    "ws": "8.21.0",
     "yargs-parser": "21.1.1",
     "zod": "catalog:"
   },
