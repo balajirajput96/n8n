@@ -67,6 +67,8 @@ jobs:
   notify-on-failure:
     name: Notify Slack on failure
     runs-on: ubuntu-latest
+    env:
+      SLACK_TOKEN: ${{ secrets.QBOT_SLACK_TOKEN }}
     needs: [unit-test, lint, performance, build-github]
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
@@ -75,8 +77,7 @@ jobs:
           sparse-checkout: .github/scripts/slack
           sparse-checkout-cone-mode: false
       - name: Notify Slack
-        env:
-          SLACK_TOKEN: ${{ secrets.QBOT_SLACK_TOKEN }}
+        if: ${{ env.SLACK_TOKEN != '' }}
         run: |
           node .github/scripts/slack/notify.mjs \
             --channel '#alerts-build' \
