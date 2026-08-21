@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { defineComponent, computed } from 'vue';
 import { useKeyboardNavigation } from './useKeyboardNavigation';
 import { createComponentRenderer } from '@/__tests__/render';
-import { createPinia } from 'pinia';
+import { createPinia, setActivePinia } from 'pinia';
 
 const eventHookSpy = vi.fn();
 describe('useKeyboardNavigation', () => {
@@ -84,6 +84,24 @@ describe('useKeyboardNavigation', () => {
 		expect(eventHookSpy).toHaveBeenCalledWith('item1', 'Enter');
 		await userEvent.keyboard('{escape}');
 		expect(eventHookSpy).toHaveBeenCalledWith('item1', 'Escape');
+	});
+
+	test('resolves a pending refresh after document teardown', async () => {
+		vi.useFakeTimers();
+		setActivePinia(createPinia());
+		const keyboardNavigation = useKeyboardNavigation();
+		const documentDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'document');
+
+		try {
+			const refresh = keyboardNavigation.refreshSelectableItems();
+			Object.defineProperty(globalThis, 'document', { configurable: true, value: undefined });
+
+			await vi.runAllTimersAsync();
+			await expect(refresh).resolves.toBeUndefined();
+		} finally {
+			if (documentDescriptor) Object.defineProperty(globalThis, 'document', documentDescriptor);
+			vi.useRealTimers();
+		}
 	});
 });
 
