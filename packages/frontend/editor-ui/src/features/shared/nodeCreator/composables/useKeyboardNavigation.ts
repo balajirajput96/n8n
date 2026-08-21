@@ -54,6 +54,10 @@ export const useKeyboardNavigation = defineStore('nodeCreatorKeyboardNavigation'
 			cleanupSelectableItems();
 			const timer = setTimeout(() => {
 				pendingRefreshes.delete(timer);
+				if (typeof document === 'undefined') {
+					resolve();
+					return;
+				}
 				selectableItems.value = Array.from(
 					document.querySelectorAll('[data-keyboard-nav-type]'),
 				).map((el) => new WeakRef(el));
