@@ -20,7 +20,7 @@
     "eslint-plugin-n8n-nodes-base": "catalog:",
     "semver": "catalog:",
     "typescript": "catalog:typescript",
-    "tmp": "0.2.4"
+    "tmp": "0.2.7"
   },
   "devDependencies": {
     "@n8n/vitest-config": "workspace:*",
