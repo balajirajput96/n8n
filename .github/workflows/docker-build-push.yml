@@ -195,7 +195,7 @@ jobs:
 
       - name: Build and push n8n Docker image
         id: build-n8n
-        uses: useblacksmith/build-push-action@30c71162f16ea2c27c3e21523255d209b8b538c1 # v2
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: ./docker/images/n8n/Dockerfile
@@ -212,7 +212,7 @@ jobs:
       - name: Build and push n8n -pc Docker image
         id: build-n8n-pc
         if: needs.determine-build-context.outputs.push_enabled == 'true'
-        uses: useblacksmith/build-push-action@30c71162f16ea2c27c3e21523255d209b8b538c1 # v2
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: ./docker/images/n8n/Dockerfile
@@ -247,7 +247,7 @@ jobs:
 
       - name: Build and push task runners Docker image (Alpine)
         id: build-runners
-        uses: useblacksmith/build-push-action@30c71162f16ea2c27c3e21523255d209b8b538c1 # v2
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: ./docker/images/runners/Dockerfile
@@ -263,7 +263,7 @@ jobs:
 
       - name: Build and push task runners Docker image (distroless)
         id: build-runners-distroless
-        uses: useblacksmith/build-push-action@30c71162f16ea2c27c3e21523255d209b8b538c1 # v2
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: ./docker/images/runners/Dockerfile.distroless
