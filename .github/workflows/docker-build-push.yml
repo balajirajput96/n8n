@@ -449,82 +449,37 @@ jobs:
           curl -v "${{ env.SUCCESS_URL }}" || echo "Failed to call success URL"
         shell: bash
 
+  # The fork Actions policy permits reusable workflows only from this owner.
+  # Upstream SLSA generation therefore cannot run here; keep dependent jobs
+  # present but safely skipped rather than attempting to publish provenance.
   provenance-n8n:
     name: SLSA Provenance (n8n)
     needs: [determine-build-context, build-and-push-docker, create_multi_arch_manifest]
-    if: |
-      needs.create_multi_arch_manifest.result == 'success' &&
-      needs.create_multi_arch_manifest.outputs.n8n_digest != ''
-    permissions:
-      id-token: write
-      packages: write
-      actions: read
-    # SLSA L3 Provenance - Must use version tags (@vX.Y.Z), NOT SHAs
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-    with:
-      image: ${{ needs.create_multi_arch_manifest.outputs.n8n_image }}
-      digest: ${{ needs.create_multi_arch_manifest.outputs.n8n_digest }}
-      registry-username: ${{ github.actor }}
-    secrets:
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
-
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "SLSA provenance is disabled for this fork."
   provenance-n8n-pc:
     name: SLSA Provenance (n8n-pc)
     needs: [determine-build-context, build-and-push-docker, create_multi_arch_manifest]
-    if: |
-      needs.create_multi_arch_manifest.result == 'success' &&
-      needs.create_multi_arch_manifest.outputs.n8n_pc_digest != ''
-    permissions:
-      id-token: write
-      packages: write
-      actions: read
-    # SLSA L3 Provenance - Must use version tags (@vX.Y.Z), NOT SHAs
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-    with:
-      image: ${{ needs.create_multi_arch_manifest.outputs.n8n_pc_image }}
-      digest: ${{ needs.create_multi_arch_manifest.outputs.n8n_pc_digest }}
-      registry-username: ${{ github.actor }}
-    secrets:
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
-
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "SLSA provenance is disabled for this fork."
   provenance-runners:
     name: SLSA Provenance (runners)
     needs: [determine-build-context, build-and-push-docker, create_multi_arch_manifest]
-    if: |
-      needs.create_multi_arch_manifest.result == 'success' &&
-      needs.create_multi_arch_manifest.outputs.runners_digest != ''
-    permissions:
-      id-token: write
-      packages: write
-      actions: read
-    # SLSA L3 Provenance - Must use version tags (@vX.Y.Z), NOT SHAs
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-    with:
-      image: ${{ needs.create_multi_arch_manifest.outputs.runners_image }}
-      digest: ${{ needs.create_multi_arch_manifest.outputs.runners_digest }}
-      registry-username: ${{ github.actor }}
-    secrets:
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
-
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "SLSA provenance is disabled for this fork."
   provenance-runners-distroless:
     name: SLSA Provenance (runners-distroless)
     needs: [determine-build-context, build-and-push-docker, create_multi_arch_manifest]
-    if: |
-      needs.create_multi_arch_manifest.result == 'success' &&
-      needs.create_multi_arch_manifest.outputs.runners_distroless_digest != ''
-    permissions:
-      id-token: write
-      packages: write
-      actions: read
-    # SLSA L3 Provenance - Must use version tags (@vX.Y.Z), NOT SHAs
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
-    with:
-      image: ${{ needs.create_multi_arch_manifest.outputs.runners_distroless_image }}
-      digest: ${{ needs.create_multi_arch_manifest.outputs.runners_distroless_digest }}
-      registry-username: ${{ github.actor }}
-    secrets:
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
-
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "SLSA provenance is disabled for this fork."
   # VEX Attestation - Documents which CVEs affect us (security/vex.openvex.json)
   vex-attestation:
     name: VEX Attestation
@@ -539,6 +494,7 @@ jobs:
         provenance-runners-distroless,
       ]
     if: |
+      github.repository == 'n8n-io/n8n' &&
       always() &&
       needs.create_multi_arch_manifest.result == 'success' &&
       (needs.determine-build-context.outputs.release_type == 'stable' ||
@@ -613,6 +569,7 @@ jobs:
         provenance-runners-distroless,
       ]
     if: |
+      github.repository == 'n8n-io/n8n' &&
       always() &&
       needs.create_multi_arch_manifest.result == 'success' &&
       (needs.determine-build-context.outputs.release_type == 'stable' ||
