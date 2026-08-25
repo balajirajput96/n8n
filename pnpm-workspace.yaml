@@ -362,7 +362,7 @@ overrides:
   vue-tsc: catalog:frontend
   gaxios: '>=7.1.1'
   google-gax: ^4.3.7
-  ws: '>=8.21.1'
+  ws: 'catalog:'
   date-fns: 2.30.0
   date-fns-tz: 2.0.0
   form-data: 4.0.6
