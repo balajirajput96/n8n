@@ -30,13 +30,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup pnpm
-      uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
-      with:
-        install: false
-        version: 11.22.0
-        cache-dependency-path: ${{ inputs.cache-dependency-path }}
-
     # Cache the Node toolcache so setup-node skips the ~33s nodejs.org download
     # on every subsequent job. First fresh runner pays the download; later jobs
     # (including parallel E2E shards) hit the cache. Blacksmith transparently
@@ -60,8 +53,10 @@ runs:
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'pnpm'
-        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    - name: Setup pnpm
+      shell: bash
+      run: npm install --global pnpm@11.22.0
 
     # Fail fast if setup-node silently fell through to the runner's baked-in
     # Node instead of activating the requested version.
@@ -242,31 +237,7 @@ runs:
         if-no-files-found: ignore
         retention-days: 7
 
-    # When setup-nodejs is nested inside another setup-nodejs invocation
-    # (e.g. load-n8n-docker's rebuild fallback → build-n8n-docker), a turbo
-    # cache server is already running and its TURBO_API env is already
-    # exported, so the nested builds can just use it. Starting a second
-    # server overwrites TURBOGHA_PORT, which both post-runs then read: the
-    # first post shuts the second server down, and the other post fails the
-    # job with a bare `fetch failed` — and the first server's caches are
-    # never saved.
-    - name: Check for running Turborepo cache server
-      id: turbo-server
-      shell: bash
-      run: echo "running=${TURBOGHA_PORT:+true}" >> "$GITHUB_OUTPUT"
-
-    # Skipped on Windows: the turbogha server binds IPv4 while `localhost`
-    # resolves to IPv6 first there, so turbo can never reach it (the build
-    # logs `failed to contact remote cache` for every artifact and falls back
-    # to a local cache). The remote cache is inert, but the action's post-run
-    # still fetches the unreachable server to save it and dies with a bare
-    # `fetch failed`, turning the whole job red. Skip it so the one Windows
-    # build job stays green; Linux/Blacksmith jobs keep remote caching.
-    - name: Configure Turborepo Cache
-      if: steps.turbo-server.outputs.running != 'true' && runner.os != 'Windows'
-      uses: rharkor/caching-for-turbo@5d14fba18e450c09393333cfd4242e8b3cb455a6 # v2.4.2
-      with:
-        server-port: 0
+    # The fork uses Turborepo's normal local cache. The optional external remote-cache action is intentionally omitted because this repository's Actions policy blocks it.
 
     - name: Setup Docker Builder
       if: ${{ inputs.enable-docker-cache == 'true' }}
