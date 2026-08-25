@@ -42,6 +42,7 @@ jobs:
     runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2204' }}
     env:
       COVERAGE_ENABLED: ${{ inputs.collectCoverage }} # Coverage collected when true
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
@@ -88,18 +89,18 @@ jobs:
           QA_METRICS_WEBHOOK_PASSWORD: ${{ secrets.QA_METRICS_WEBHOOK_PASSWORD }}
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           report_type: test_results
           name: backend-unit-tests
 
       - name: Upload coverage to Codecov
-        if: env.COVERAGE_ENABLED == 'true'
+        if: ${{ env.COVERAGE_ENABLED == 'true' && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           flags: backend-unit
           name: backend-unit
           files: ./packages/**/coverage/lcov.info
@@ -109,6 +110,7 @@ jobs:
     runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2204' }}
     env:
       COVERAGE_ENABLED: ${{ inputs.collectCoverage }} # Coverage collected when true
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
@@ -148,18 +150,18 @@ jobs:
           QA_METRICS_WEBHOOK_PASSWORD: ${{ secrets.QA_METRICS_WEBHOOK_PASSWORD }}
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           report_type: test_results
           name: backend-integration-tests
 
       - name: Upload coverage to Codecov
-        if: env.COVERAGE_ENABLED == 'true'
+        if: ${{ env.COVERAGE_ENABLED == 'true' && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           flags: backend-integration
           name: backend-integration
           files: ./packages/**/coverage/lcov.info
@@ -169,6 +171,7 @@ jobs:
     runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2204' }}
     env:
       COVERAGE_ENABLED: ${{ inputs.collectCoverage }} # Coverage collected when true
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
@@ -193,18 +196,18 @@ jobs:
           QA_METRICS_WEBHOOK_PASSWORD: ${{ secrets.QA_METRICS_WEBHOOK_PASSWORD }}
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           report_type: test_results
           name: nodes-unit-tests
 
       - name: Upload coverage to Codecov
-        if: env.COVERAGE_ENABLED == 'true'
+        if: ${{ env.COVERAGE_ENABLED == 'true' && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           flags: nodes-unit
           name: nodes-unit
           files: ./packages/**/coverage/lcov.info
@@ -218,6 +221,7 @@ jobs:
         shard: [1, 2]
     env:
       COVERAGE_ENABLED: ${{ inputs.collectCoverage }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
@@ -244,18 +248,18 @@ jobs:
           QA_METRICS_WEBHOOK_PASSWORD: ${{ secrets.QA_METRICS_WEBHOOK_PASSWORD }}
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           report_type: test_results
           name: frontend-shard-${{ matrix.shard }}-tests
 
       - name: Upload coverage to Codecov
-        if: env.COVERAGE_ENABLED == 'true'
+        if: ${{ env.COVERAGE_ENABLED == 'true' && env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           flags: frontend
           name: frontend-shard-${{ matrix.shard }}
           files: ./packages/**/coverage/lcov.info
