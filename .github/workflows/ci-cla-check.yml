@@ -74,12 +74,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      # Use the installation token when the optional App credentials are configured.
+      # A pull_request_target run otherwise retains only the explicit job permissions
+      # declared above through github.token; this avoids failing before CLA validation.
       - name: Generate GitHub App Token
         id: generate-token
+        env:
+          APP_ID: ${{ secrets.N8N_ASSISTANT_APP_ID }}
+          PRIVATE_KEY: ${{ secrets.N8N_ASSISTANT_PRIVATE_KEY }}
+        if: ${{ env.APP_ID != '' && env.PRIVATE_KEY != '' }}
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
         with:
-          app-id: ${{ secrets.N8N_ASSISTANT_APP_ID }}
-          private-key: ${{ secrets.N8N_ASSISTANT_PRIVATE_KEY }}
+          app-id: ${{ env.APP_ID }}
+          private-key: ${{ env.PRIVATE_KEY }}
 
       - name: Checkout CLA scripts
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -91,7 +98,7 @@ jobs:
         id: context
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             const mod = await import('${{ github.workspace }}/.github/scripts/cla/resolve-context.mjs');
             await mod.default({ github, context, core });
@@ -102,7 +109,7 @@ jobs:
         env:
           HEAD_SHA: ${{ steps.context.outputs.head_sha }}
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             await github.rest.repos.createCommitStatus({
               owner: context.repo.owner,
@@ -122,7 +129,7 @@ jobs:
           BASE_SHA: ${{ steps.context.outputs.base_sha }}
           IS_MERGE_GROUP: ${{ steps.context.outputs.is_merge_group }}
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             const mod = await import('${{ github.workspace }}/.github/scripts/cla/check-signatures.mjs');
             await mod.default({ github, context, core });
@@ -138,7 +145,7 @@ jobs:
           ERRORED: ${{ steps.check.outputs.errored }}
           UNLINKED: ${{ steps.check.outputs.unlinked }}
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             const mod = await import('${{ github.workspace }}/.github/scripts/cla/post-final-status.mjs');
             await mod.default({ github, context, core });
@@ -158,7 +165,7 @@ jobs:
           ERRORED: ${{ steps.check.outputs.errored }}
           UNLINKED: ${{ steps.check.outputs.unlinked }}
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             const mod = await import('${{ github.workspace }}/.github/scripts/cla/update-pr-comment.mjs');
             await mod.default({ github, context, core });
@@ -174,7 +181,7 @@ jobs:
           PR_NUMBER: ${{ steps.context.outputs.pr_number }}
           ALL_SIGNED: ${{ steps.check.outputs.all_signed }}
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             const mod = await import('${{ github.workspace }}/.github/scripts/cla/manage-label.mjs');
             await mod.default({ github, context, core });
@@ -185,7 +192,7 @@ jobs:
         env:
           ALL_SIGNED: ${{ steps.check.outputs.all_signed }}
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ steps.generate-token.outputs.token || github.token }}
           script: |
             try {
               await github.rest.reactions.createForIssueComment({
