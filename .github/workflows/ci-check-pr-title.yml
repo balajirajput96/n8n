@@ -2,20 +2,21 @@ name: 'CI: Check PR Title'
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-    branches:
-      - 'master'
-      - '1.x'
+    types: [opened, edited, synchronize]
+    branches: ['master', '1.x']
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   check-pr-title:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Checkout title validator
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Validate PR title
-        uses: n8n-io/validate-n8n-pull-request-title@8aad0456a34b6f487c421539210529304ae8042c # v2.5.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node scripts/validate-pr-title.mjs "$PR_TITLE"
