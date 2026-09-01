@@ -207,7 +207,7 @@ catalog:
   jsonwebtoken: 9.0.3
   kafkajs: 2.2.4
   langchain: 1.2.30
-  langsmith: 0.6.0
+  langsmith: 0.9.0
   ldapts: 8.1.7
   lodash: 4.18.1
   lodash-es: 4.18.1
@@ -222,7 +222,7 @@ catalog:
   mysql2: 3.23.1
   nanoid: 3.3.18
   nock: 14.0.14
-  nodemailer: 8.0.10
+  nodemailer: 9.0.1
   openai: 6.46.0
   oracledb: 6.10.0
   oxlint: 1.78.0
@@ -254,13 +254,14 @@ catalog:
   tsx: ^4.19.3
   turndown: ^7.2.4
   typescript: 6.0.2
-  uuid: 11.1.1
+  uuid: 14.0.2
   vite: ^8.0.2
   vite-plugin-dts: ^4.5.4
   vite-plugin-singlefile: 2.3.3
   vitest: ^4.1.9
   vitest-mock-extended: ^3.1.0
   vm2: 3.11.6
+  ws: '>=8.21.1'
   xml2js: 0.6.2
   xss: 1.0.15
   yaml: 2.8.3
@@ -361,7 +362,7 @@ overrides:
   vue-tsc: catalog:frontend
   gaxios: '>=7.1.1'
   google-gax: ^4.3.7
-  ws: '>=8.21.1'
+  ws: 'catalog:'
   date-fns: 2.30.0
   date-fns-tz: 2.0.0
   form-data: 4.0.6

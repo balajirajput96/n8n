@@ -25,6 +25,7 @@ const filterText = computed(() =>
 		:class="$style.root"
 		:disabled="props.disabled"
 		:value="props.value"
+		:label="props.label"
 		:text-value="filterText"
 		:data-disabled="props.disabled || undefined"
 		@mousedown.prevent
