@@ -206,9 +206,16 @@ if [ "$E2E" -eq 1 ]; then
 	docker compose -f "$E2E_DIR/compose.yml" exec -T n8n \
 		wget -qO- 'http://searxng:8080/search?q=test&format=json' 2>/dev/null | grep -q '"results"' &&
 		pass "searxng serves JSON search to n8n" || fail "searxng serves JSON search to n8n"
-	docker compose -f "$E2E_DIR/compose.yml" logs sandbox-runner-1 2>/dev/null |
-		grep -q 'registration stream established' &&
-		pass "runner registered with sandbox-api" || fail "runner registered with sandbox-api"
+		runner_registered=0
+		for _ in $(seq 1 30); do
+			if docker compose -f "$E2E_DIR/compose.yml" logs sandbox-runner-1 2>/dev/null |
+				grep -q 'registration stream established'; then
+				runner_registered=1
+				break
+			fi
+			sleep 2
+		done
+		[ "$runner_registered" -eq 1 ] && pass "runner registered with sandbox-api" || fail "runner registered with sandbox-api"
 
 	check_not "fresh install fails while port is taken" env N8N_DIR="$WORK/conflict" sh "$SCRIPT"
 
