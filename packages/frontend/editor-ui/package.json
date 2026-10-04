@@ -133,7 +133,7 @@
   },
   "devDependencies": {
     "@codecov/vite-plugin": "^1.9.1",
-    "@faker-js/faker": "^8.0.2",
+    "@faker-js/faker": "^10.5.0",
     "@iconify/json": "catalog:",
     "@n8n/eslint-config": "workspace:*",
     "@n8n/frontend-vite-config": "workspace:*",
@@ -165,7 +165,7 @@
     "@vitest/coverage-v8": "catalog:",
     "@vue/test-utils": "catalog:frontend",
     "autoprefixer": "catalog:frontend",
-    "browserslist": "4.28.1",
+    "browserslist": "4.28.7",
     "browserslist-to-esbuild": "^2.1.1",
     "eslint-plugin-oxlint": "catalog:",
     "fake-indexeddb": "^6.0.0",
