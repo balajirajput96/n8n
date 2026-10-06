@@ -165,7 +165,7 @@
     "@vitest/coverage-v8": "catalog:",
     "@vue/test-utils": "catalog:frontend",
     "autoprefixer": "catalog:frontend",
-    "browserslist": "4.28.1",
+    "browserslist": "4.29.3",
     "browserslist-to-esbuild": "^2.1.1",
     "eslint-plugin-oxlint": "catalog:",
     "fake-indexeddb": "^6.0.0",
